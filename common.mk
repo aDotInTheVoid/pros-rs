@@ -62,7 +62,7 @@ OK_STRING=$(OK_COLOR)[OK]$(NO_COLOR)
 DONE_STRING=$(OK_COLOR)[DONE]$(NO_COLOR)
 ERROR_STRING=$(ERROR_COLOR)[ERRORS]$(NO_COLOR)
 WARN_STRING=$(WARN_COLOR)[WARNINGS]$(NO_COLOR)
-ECHO=/bin/echo -e
+ECHO=/usr/local/opt/coreutils/libexec/gnubin/echo -e
 echo=@$(ECHO) "$2$1$(NO_COLOR)"
 echon=@$(ECHO) -n "$2$1$(NO_COLOR)"
 
@@ -162,7 +162,7 @@ clean-template:
 
 $(LIBAR): $(call GETALLOBJ,$(EXCLUDE_SRC_FROM_LIB)) $(EXTRA_LIB_DEPS)
 	-$Drm -f $@
-	@echo -n "Creating $@ "
+	@echo  "Creating $@ "
 	$(call test_output,$D$(AR) rcs $@ $^, $(DONE_STRING))
 
 .PHONY: library
@@ -182,36 +182,36 @@ ELF_DEPS=$(call GETALLOBJ,$(EXCLUDE_SRCDIRS))
 endif
 
 $(MONOLITH_BIN): $(MONOLITH_ELF) $(BINDIR)
-	@echo -n "Creating $@ for $(DEVICE) "
+	@echo "Creating $@ for $(DEVICE) "
 	$(call test_output,$D$(OBJCOPY) $< -O binary -R .hot_init $@,$(DONE_STRING))
 
 $(MONOLITH_ELF): $(ELF_DEPS) $(LIBRARIES)
 	$(call _pros_ld_timestamp)
-	@echo -n "Linking project with $(ARCHIVE_TEXT_LIST) "
+	@echo "Linking project with $(ARCHIVE_TEXT_LIST) "
 	$(call test_output,$D$(LD) $(LDFLAGS) $(ELF_DEPS) $(LDTIMEOBJ) $(call wlprefix,-T$(FWDIR)/v5.ld $(LNK_FLAGS)) -o $@,$(OK_STRING))
 	@echo Section sizes:
 	-$(VV)$(SIZETOOL) $(SIZEFLAGS) $@ $(SIZES_SED) $(SIZES_NUMFMT)
 
 $(COLD_BIN): $(COLD_ELF)
-	@echo -n "Creating cold package binary for $(DEVICE) "
+	@echo "Creating cold package binary for $(DEVICE) "
 	$(call test_output,$D$(OBJCOPY) $< -O binary -R .hot_init $@,$(DONE_STRING))
 
 $(COLD_ELF): $(LIBRARIES)
 	$(call _pros_ld_timestamp)
-	@echo -n "Creating cold package with $(ARCHIVE_TEXT_LIST) "
+	@echo "Creating cold package with $(ARCHIVE_TEXT_LIST) "
 	$(call test_output,$D$(LD) $(LDFLAGS) $(LDTIMEOBJ) $(call wlprefix,--gc-keep-exported --whole-archive $^ -lstdc++ --no-whole-archive) $(call wlprefix,-T$(FWDIR)/v5.ld $(LNK_FLAGS) -o $@),$(OK_STRING))
-	@echo -n "Stripping cold package "
+	@echo "Stripping cold package "
 	$(call test_output,$D$(OBJCOPY) --strip-symbol=install_hot_table --strip-symbol=__libc_init_array --strip-symbol=_PROS_COMPILE_DIRECTORY --strip-symbol=_PROS_COMPILE_TIMESTAMP $@ $@, $(DONE_STRING))
 	@echo Section sizes:
 	-$(VV)$(SIZETOOL) $(SIZEFLAGS) $@ $(SIZES_SED) $(SIZES_NUMFMT)
 
 $(HOT_BIN): $(HOT_ELF) $(COLD_BIN)
-	@echo -n "Creating $@ for $(DEVICE) "
+	@echo "Creating $@ for $(DEVICE) "
 	$(call test_output,$D$(OBJCOPY) $< -O binary $@,$(DONE_STRING))
 
 $(HOT_ELF): $(COLD_ELF) $(ELF_DEPS)
 	$(call _pros_ld_timestamp)
-	@echo -n "Linking hot project with $(COLD_ELF) and $(ARCHIVE_TEXT_LIST) "
+	@echo "Linking hot project with $(COLD_ELF) and $(ARCHIVE_TEXT_LIST) "
 	$(call test_output,$D$(LD) $(LDFLAGS) $(call wlprefix,-nostartfiles -R $<) $(filter-out $<,$^) $(LDTIMEOBJ) $(LIBRARIES) $(call wlprefix,-T$(FWDIR)/v5-hot.ld $(LNK_FLAGS) -o $@),$(OK_STRING))
 	@echo Section sizes:
 	-$(VV)$(SIZETOOL) $(SIZEFLAGS) $@ $(SIZES_SED) $(SIZES_NUMFMT)
@@ -219,7 +219,7 @@ $(HOT_ELF): $(COLD_ELF) $(ELF_DEPS)
 define asm_rule
 $(BINDIR)/%.$1.o: $(SRCDIR)/%.$1
 	$(VV)mkdir -p $$(dir $$@)
-	@echo -n "Compiling $$< "
+	@echo "Compiling $$< "
 	$$(call test_output,$D$(AS) -c $(ASMFLAGS) -o $$@ $$<,$(OK_STRING))
 endef
 $(foreach asmext,$(ASMEXTS),$(eval $(call asm_rule,$(asmext))))
@@ -227,7 +227,7 @@ $(foreach asmext,$(ASMEXTS),$(eval $(call asm_rule,$(asmext))))
 define c_rule
 $(BINDIR)/%.$1.o: $(SRCDIR)/%.$1
 	$(VV)mkdir -p $$(dir $$@)
-	@echo -n "Compiling $$< "
+	@echo "Compiling $$< "
 	$$(call test_output,$D$(CC) -c $(INCLUDE) -iquote"$(INCDIR)/$$(dir $$*)" $(CFLAGS) $(EXTRA_CFLAGS) -o $$@ $$<,$(OK_STRING))
 endef
 $(foreach cext,$(CEXTS),$(eval $(call c_rule,$(cext))))
@@ -235,14 +235,14 @@ $(foreach cext,$(CEXTS),$(eval $(call c_rule,$(cext))))
 define cxx_rule
 $(BINDIR)/%.$1.o: $(SRCDIR)/%.$1
 	$(VV)mkdir -p $$(dir $$@)
-	@echo -n "Compiling $$< "
+	@echo "Compiling $$< "
 	$$(call test_output,$D$(CXX) -c $(INCLUDE) -iquote"$(INCDIR)/$$(dir $$*)" $(CXXFLAGS) $(EXTRA_CXXFLAGS) -o $$@ $$<,$(OK_STRING))
 endef
 $(foreach cxxext,$(CXXEXTS),$(eval $(call cxx_rule,$(cxxext))))
 
 define _pros_ld_timestamp
 $(VV)mkdir -p $(dir $(LDTIMEOBJ))
-@echo -n "Adding timestamp "
+@echo "Adding timestamp "
 @# Pipe a line of code defining _PROS_COMPILE_TOOLSTAMP and _PROS_COMPILE_DIRECTORY into GCC,
 @# which allows compilation from stdin. We define _PROS_COMPILE_DIRECTORY using a command line-defined macro
 @# which is the pwd | tail bit, which will truncate the path to the last 23 characters
