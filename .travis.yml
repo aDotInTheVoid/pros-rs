@@ -8,7 +8,9 @@ install:
   - sudo apt-get -y install gcc-arm-embedded
   - rustup target add armv7r-none-eabi
 
-cache: apt
+cache: 
+  - apt
+  - cargo
 
 rust:
 - stable
