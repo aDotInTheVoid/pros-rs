@@ -1,0 +1,20 @@
+anguage: rust
+sudo: true
+dist: xenial
+
+
+
+install:
+  - sudo add-apt-repository -y ppa:team-gcc-arm-embedded/ppa
+  - sudo apt-get -y update
+  - sudo apt-get -y install gcc-arm-embedded
+  - rustup target add armv7r-none-eabi
+
+cache: apt
+
+rust:
+- stable
+
+script:
+  - cargo test --target x86_64-unknown-linux-gnu
+  - make all
