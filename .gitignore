@@ -60,3 +60,13 @@ dkms.conf
 
 !firmware/libpros.a
 bin/
+
+
+#Added by cargo
+#
+#already existing elements are commented out
+
+/target
+**/*.rs.bk
+# We don't ignore Cargo.lock, because while rust sees this as a library,
+# It funcions more like a binary
