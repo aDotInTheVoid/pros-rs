@@ -1,0 +1,6 @@
+[build]
+target = "armv7r-none-eabi"
+rustdoc = "./.cargo/rustdoc.sh" 
+
+[alias]
+cl= ["clean", "-p", "pros-rs"]

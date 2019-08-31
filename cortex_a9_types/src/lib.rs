@@ -64,7 +64,6 @@ pub use cortex_types::*;
 #[cfg(not(target_arch = "arm"))]
 pub use libc::*;
 
-
 #[cfg(test)]
 mod tests {
     #[test]
