@@ -16,5 +16,5 @@ rust:
 - stable
 
 script:
-  - cargo test --target x86_64-unknown-linux-gnu
+  - cargo build
   - make all
