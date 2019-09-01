@@ -8,4 +8,6 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
+use cortex_a9_types;
+
 include!(concat!(env!("OUT_DIR"), "/prg.rs"));
