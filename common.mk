@@ -147,6 +147,7 @@ all: clean $(DEFAULT_BIN)
 clean:
 	@echo Cleaning project
 	-$Drm -rf $(BINDIR)
+	- cargo cl
 
 ifeq ($(IS_LIBRARY),1)
 ifeq ($(LIBNAME),libbest)

@@ -18,7 +18,6 @@ before_cache:
   - brew cleanup
   
 script:
-  - cargo build
   - make all
   
 install:
