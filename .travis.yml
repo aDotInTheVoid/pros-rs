@@ -1,0 +1,29 @@
+language: rust
+sudo: false
+os: osx
+osx_image: xcode10.3
+
+addons:
+  homebrew:
+    packages: arm-gcc-bin
+    taps: osx-cross/arm
+
+cache: 
+#   - apt
+  cargo: true
+  directories:
+    - $HOME/Library/Caches/Homebrew
+
+before_cache:
+  - brew cleanup
+  
+script:
+  - cargo build
+  - make all
+  
+install:
+#   - sudo add-apt-repository -y ppa:team-gcc-arm-embedded/ppa
+#   - sudo apt-get -y update
+#   - sudo apt-get -y install gcc-arm-embedded
+  - rustup target add armv7r-none-eabi
+  - rustup component add rustfmt

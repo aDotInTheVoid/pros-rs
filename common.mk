@@ -62,7 +62,7 @@ OK_STRING=$(OK_COLOR)[OK]$(NO_COLOR)
 DONE_STRING=$(OK_COLOR)[DONE]$(NO_COLOR)
 ERROR_STRING=$(ERROR_COLOR)[ERRORS]$(NO_COLOR)
 WARN_STRING=$(WARN_COLOR)[WARNINGS]$(NO_COLOR)
-ECHO=/usr/local/opt/coreutils/libexec/gnubin/echo -e
+ECHO=$(shell which echo) -e
 echo=@$(ECHO) "$2$1$(NO_COLOR)"
 echon=@$(ECHO) -n "$2$1$(NO_COLOR)"
 
