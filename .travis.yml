@@ -9,6 +9,7 @@ install:
 #   - sudo apt-get -y update
 #   - sudo apt-get -y install gcc-arm-embedded
   - rustup target add armv7r-none-eabi
+  - rustup component add rustfmt
 
 addons:
   homebrew:
