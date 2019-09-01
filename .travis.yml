@@ -19,6 +19,9 @@ addons:
 cache: 
 #   - apt
   - cargo
+  directories:
+    - $HOME/Library/Caches/Homebrew
+
 
 rust:
 - stable
@@ -26,3 +29,6 @@ rust:
 script:
   - cargo build
   - make all
+  
+before_cache:
+  - brew cleanup
